@@ -181,7 +181,7 @@ with col3:
         contactos_url = "http://localhost:8502"
         st.markdown(
             f'<div style="text-align: center;">'
-            f'<a href="{contactos_url}" target="_blank">'
+            f'<a href="https://sct-contactos.streamlit.app/" target="_blank">'
             f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
             f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
             f'</a>'
@@ -194,4 +194,5 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
