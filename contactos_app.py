@@ -219,7 +219,7 @@ h3 {{
 /* Línea divisoria gris */
 .divider {{
     border-top: 1px solid #ccc;
-    margin: 2rem 0;
+    margin: 1rem 0;
     width: 100%;
 }}
 
@@ -357,4 +357,5 @@ else:
 
 st.session_state.contactos = edited.drop(columns=["Seleccionar"])
 if not st.session_state.contactos.empty:
+
     guardar_en_bd(st.session_state.contactos)
