@@ -14,7 +14,7 @@ TITULO = "DIRECTORIO DE CONTACTOS"
 SUBTITULO = "Sección de Coordinación Territorial"
 
 TAMANO_TEXTO_INPUT = "12px"
-TAMANO_TEXTO_DROPDOWN = "12px"  # Modificado a 16px
+TAMANO_TEXTO_DROPDOWN = "12px"
 TAMANO_TEXTO_BOTONES = "12px"
 COLOR_BOTONES = "#0F69B4"
 COLOR_BOTONES_HOVER = "#DDEFFB"
@@ -49,7 +49,7 @@ OPCIONES_CARGO = [
     "JEFA/E COORDINACIÓN TERRITORIAL(S)", "JEFA/E DPTO. ATENCIÓN DE USUARIOS", "JEFA/E DPTO. ATENCIÓN DE USUARIOS(S)","JEFA/E DEPARTAMENTO JURÍDICO",
     "JEFA/E DEPARTAMENTO JURÍDICO(S)", "JEFA/E DIVISIÓN FINANZAS Y ADMINISTRACIÓN", "JEFA/E DIVISIÓN FINANZAS Y ADMINISTRACIÓN(S)", "JEFA/E DIVISIÓN OPERACIONES",
     "JEFA/E DIVISIÓN OPERACIONES(S)", "JEFA/E DEPARTAMENTO DE TECNOLOGÍA DE LA INFORMACIÓN", "JEFA/E DEPARTAMENTO DE TECNOLOGÍA DE LA INFORMACIÓN(S)",
-    "JEFA/E DEPTO. PREVENCIÓN DE RIESGOS LABORALES", "JEFA/E DEPTO. PREVENCIÓN DE RIESGOS LABORALES(S)", "JEFA/E DEPARTAMENTO DE GESTIÓN DE PERSONAS",
+    "JEFA/E DEPTO. PREVENCIÓN DE RIESGOS LABORALES", "JEFA/E DEPTO. PREVENCIÓN RIESGOS LABORALES(S)", "JEFA/E DEPARTAMENTO DE GESTIÓN DE PERSONAS",
     "JEFA/E DEPARTAMENTO DE GESTIÓN DE PERSONAS(S)", "JEFA/E UNIDAD DE AUDITORÍA", "JEFA/E UNIDAD DE AUDITORÍA(S)",
     "JEFA/E DEPTO. DE ESTUDIOS Y GESTIÓN ESTRATÉGICA", "JEFA/E DEPTO. DE ESTUDIOS Y GESTIÓN ESTRATÉGICA(S)", "JEFA/E DPTO. DE ESTUDIOS", "JEFA/E DPTO. DE ESTUDIOS(S)",
     "JEFA/E DEPARTAMENTO DE COMUNICACIONES",
@@ -61,7 +61,7 @@ OPCIONES_DEPTO = [
     "DAU", "DAF", "DIVOP", "DTI", "DEGE", "DGDP", "DAI", "DJU", "DCOM", 
     "DSALUD", "DPREV", "DEST", "ANTOFAGASTA", "TARAPACÁ", "ATACAMA", 
     "COQUIMBO", "VALPARAÍSO", "O'HIGGINS", "MAULE", "BIOBIO", "ARAUCANÍA",
-    "LOS LAGOS", "AYSÉN", "MAGALLANES", "E.METROPOLITANA", "LOS RÍOS", 
+    "LOS LAGOS", "AYSEN", "MAGALLANES", "E.METROPOLITANA", "LOS RÍOS", 
     "ARICA Y PARINACOTA", "ÑUBLE"
 ]
 
@@ -189,49 +189,118 @@ st.set_page_config(page_title="Directorio de Contactos", layout="wide", initial_
 img_src = f"data:image/png;base64,{image_to_base64(IMAGEN_LOCAL)}"
 st.markdown(f"""
 <style>
-.stTextInput > div > div > input {{ font-size: {TAMANO_TEXTO_INPUT} !important; }}
+/* Eliminar scroll de la página principal */
+.main .block-container {{
+    overflow: hidden !important;
+}}
+/* Scroll solo para la tabla */
+.element-container:has(.stDataEditor) {{
+    overflow: auto !important;
+    max-height: 400px !important;
+}}
+
+/* Minimizar espacios en contenedores */
+.stTextInput, .stSelectbox, .stButton {{
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}}
+
+/* Contenedores de columnas con mínimo espacio */
+div[data-testid="column"] {{
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}}
+
+/* Inputs con mínimo espacio */
+.stTextInput > div > div > input {{ 
+    font-size: {TAMANO_TEXTO_INPUT} !important; 
+    height: 35px !important;
+    padding: 6px 10px !important;
+    margin: 1px 0px !important;
+}}
+
+/* Dropdowns con mínimo espacio */
 .stSelectbox > div > div > select {{ 
     font-size: {TAMANO_TEXTO_DROPDOWN} !important; 
-    height: auto !important;
-    padding: 8px !important;
+    height: 35px !important;
+    padding: 6px !important;
+    margin: 1px 0px !important;
 }}
+
 div[data-baseweb="select"] > div {{ 
     font-size: {TAMANO_TEXTO_DROPDOWN} !important; 
 }}
+
+/* Botones con mínimo espacio */
 .stButton > button {{
     font-size: {TAMANO_TEXTO_BOTONES} !important;
     background-color: {COLOR_BOTONES} !important;
     color: white !important;
     border: none !important;
-    width: 100%;
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 32px !important;
+    padding: 0px 6px !important;
+    margin: 1px 0px !important;
 }}
 .stButton > button:hover {{ background-color: {COLOR_BOTONES_HOVER} !important; }}
 
-/* Nuevo estilo para subheaders */
+/* Botones de descarga */
+.stDownloadButton > button {{
+    font-size: {TAMANO_TEXTO_BOTONES} !important;
+    background-color: {COLOR_BOTONES} !important;
+    color: white !important;
+    border: none !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 32px !important;
+    padding: 0px 6px !important;
+    margin: 1px 0px !important;
+}}
+.stDownloadButton > button:hover {{ background-color: {COLOR_BOTONES_HOVER} !important; }}
+
+/* Subheaders con mínimo espacio */
 h3 {{
     font-size: 16px !important;
-    margin-bottom: 0.5rem !important;
-    margin-top: 0.5rem !important;
+    margin-bottom: 0.2rem !important;
+    margin-top: 0.2rem !important;
     color: #0F69B4 !important;
     font-weight: bold !important;
 }}
 
-/* Línea divisoria gris */
+/* Línea divisoria gris con menos espacio */
 .divider {{
     border-top: 1px solid #ccc;
-    margin: 1rem 0;
+    margin: 0.5rem 0 !important;
     width: 100%;
 }}
 
+/* Header con menos margen inferior */
 .header-container {{
     display: flex; align-items: center; justify-content: center;
     background-color: {COLOR_FONDO}; height: 85px; width: 100%;
-    color: white; position: relative; margin: -1rem -1rem 1.2rem -1rem;
+    color: white; position: relative; margin: -1rem -1rem 0.5rem -1rem !important;
 }}
 .header-logo {{ position: absolute; left: 20px; top: 5px; }}
 .header-logo img {{ height: 60px; }}
 .header-subtitle {{ position: absolute; bottom: 5px; left: 20px; font-size: 10px; }}
 .header-title {{ font-size: 20px; font-weight: bold; }}
+
+/* Reducir espacio entre elementos de formulario */
+div.row-widget.stButton {{
+    margin: 1px 0px !important;
+    padding: 0px !important;
+}}
+
+/* Reducir espacio en contenedores internos */
+div[data-testid="stVerticalBlock"] > div {{
+    margin: 0px !important;
+    padding: 0px !important;
+}}
 </style>
 <div class="header-container">
     <div class="header-logo"><img src="{img_src}" alt="Logo"></div>
@@ -252,8 +321,7 @@ if "registro_modificar" not in st.session_state:
 # =========================
 st.subheader("Agregar / Modificar Contacto")
 
-# Modificado: Ahora tenemos 3 columnas en lugar de 2
-col_inputs, col_botones, col_vacio = st.columns([4, 2, 2])  # Contenedor vacío añadido
+col_inputs, col_botones, col_vacio = st.columns([4, 2, 2])
 
 with col_inputs:
     contacto_actual = {col:"" for col in COLUMNAS_UI}
@@ -279,7 +347,7 @@ with col_botones:
     col_acciones, col_opciones = st.columns(2)
 
     with col_acciones:
-        if st.button("Guardar"):
+        if st.button("Guardar", use_container_width=True):
             nuevo = {
                 "Nombre": nombre, "Cargo": cargo, "Dpto./Región": departamento,
                 "Teléfono Directo/Anexo": telefono, "Celular Institucional": celular_inst,
@@ -295,14 +363,14 @@ with col_botones:
                 )
             guardar_en_bd(st.session_state.contactos)
 
-        if st.button("Modificar"):
+        if st.button("Modificar", use_container_width=True):
             if st.session_state.registro_modificar is None:
                 st.warning("⚠️ Debes seleccionar un contacto para modificar.")
 
-        if st.button("Cancelar"):
+        if st.button("Cancelar", use_container_width=True):
             st.session_state.registro_modificar = None
 
-        if st.button("Eliminar"):
+        if st.button("Eliminar", use_container_width=True):
             if st.session_state.registro_modificar is not None:
                 st.session_state.contactos = st.session_state.contactos.drop(
                     index=st.session_state.registro_modificar
@@ -311,16 +379,15 @@ with col_botones:
                 guardar_en_bd(st.session_state.contactos)
 
     with col_opciones:
-        if st.button("📥 Exportar Excel"):
+        if st.button("📥 Exportar Excel", use_container_width=True):
             buffer = exportar_excel(st.session_state.contactos)
             st.download_button("Descargar archivo", data=buffer, file_name="contactos.xlsx",
-                               mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        if st.button("📥 Importar Excel"):
+                               mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", use_container_width=True)
+        if st.button("📥 Importar Excel", use_container_width=True):
             importar_excel_automatico()
 
-# Contenedor vacío al lado derecho
 with col_vacio:
-    pass  # Este contenedor está vacío
+    pass
 
 # =========================
 # LÍNEA DIVISORIA GRIS
@@ -357,5 +424,4 @@ else:
 
 st.session_state.contactos = edited.drop(columns=["Seleccionar"])
 if not st.session_state.contactos.empty:
-
     guardar_en_bd(st.session_state.contactos)
