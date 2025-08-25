@@ -194,15 +194,16 @@ with col3:
             f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
             f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
             f'</a>'
-            f'<div style="margin-top:8px; font-size:14px; font-weight:700; color:#333;">Vacaciones</div>'
+            f'<div style="margin-top:8px; font-size:14px; font-weight:700; color:#333;">Vacaciones/Feriados</div>'
             f'</div>',
             unsafe_allow_html=True
         )
     except:
-        st.error("No se pudo cargar la imagen vacaciones.png")
+        st.error("No se pudo cargar la imagen vacaciones_feriados.png")
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
