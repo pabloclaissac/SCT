@@ -187,7 +187,7 @@ with col4:
 
 with col3:
     try:
-        img_bytes = img_to_bytes("vacaciones_feriados.png")
+        img_bytes = img_to_bytes("Vacaciones_feriados.png")
         st.markdown(
             f'<div style="text-align: center;">'
             f'<a href="https://sct-vacaciones-feriados.streamlit.app/" target="_blank">'
@@ -203,6 +203,7 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
