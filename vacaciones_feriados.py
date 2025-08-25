@@ -1,9 +1,11 @@
+# vacaciones_feriados.py
 import streamlit as st
 import pandas as pd
 from datetime import datetime, date
 from io import BytesIO
 import base64
 import os
+import sqlite3
 
 # =========================
 # CONFIGURACIÓN ENCABEZADO
@@ -12,6 +14,7 @@ COLOR_FONDO = "#0F69B4"
 IMAGEN_LOCAL = "LOGO-PROPIO-ISL-2023-CMYK-01.png"
 TITULO = "VACACIONES Y PERMISOS"
 SUBTITULO = "Sección de Coordinación Territorial"
+DB_FILE = "vacaciones_permisos.db"
 
 def image_to_base64(path):
     try:
@@ -23,7 +26,7 @@ def image_to_base64(path):
 img_base64 = image_to_base64(IMAGEN_LOCAL)
 img_src = f"data:image/png;base64,{img_base64}"
 
-# CSS
+# CSS + Encabezado
 header_html = f"""
     <style>
         .header-container {{
@@ -66,10 +69,7 @@ header_html = f"""
         .stDataFrame {{ font-size: 10px; margin: 0 !important; }}
         div[data-testid="stDataFrameResizable"] {{ overflow-x: auto; margin: 0 !important; }}
         .column-header {{
-            
             text-align: Left;
-            
-            
             font-size: 14px;
         }}
         .stTextInput, .stDateInput, .stButton {{ 
@@ -95,6 +95,97 @@ st.markdown(header_html, unsafe_allow_html=True)
 
 st.set_page_config(page_title="VACACIONES Y PERMISOS",
                    page_icon="📅", layout="wide", initial_sidebar_state="collapsed")
+
+# =========================
+# BASE DE DATOS (SQLite)
+# =========================
+def init_db():
+    conn = sqlite3.connect(DB_FILE)
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS directores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            director TEXT,
+            telefono_dir TEXT,
+            fecha_inicio_dir TEXT,
+            fecha_termino_dir TEXT,
+            subrogante TEXT,
+            telefono_sub TEXT,
+            fecha_inicio_sub TEXT,
+            fecha_termino_sub TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+def cargar_desde_db():
+    """Retorna DataFrame con columnas ya renombradas a las usadas por la UI."""
+    conn = sqlite3.connect(DB_FILE)
+    try:
+        df = pd.read_sql_query("SELECT * FROM directores", conn)
+    except Exception:
+        df = pd.DataFrame()
+    finally:
+        conn.close()
+
+    if df.empty:
+        # DataFrame con columnas esperadas (vacío)
+        return pd.DataFrame(columns=[
+            'Director Regional', 'Teléfono Director', 'Fecha Inicio Director', 'Fecha Término Director',
+            'Subrogante', 'Teléfono Subrogante', 'Fecha Inicio Subrogante', 'Fecha Término Subrogante'
+        ])
+
+    # Convertir a esquema de UI
+    df = df.drop(columns=["id"], errors="ignore")
+    df.rename(columns={
+        "director": "Director Regional",
+        "telefono_dir": "Teléfono Director",
+        "fecha_inicio_dir": "Fecha Inicio Director",
+        "fecha_termino_dir": "Fecha Término Director",
+        "subrogante": "Subrogante",
+        "telefono_sub": "Teléfono Subrogante",
+        "fecha_inicio_sub": "Fecha Inicio Subrogante",
+        "fecha_termino_sub": "Fecha Término Subrogante"
+    }, inplace=True)
+
+    # Parse de fechas a date
+    for col in ['Fecha Inicio Director', 'Fecha Término Director', 'Fecha Inicio Subrogante', 'Fecha Término Subrogante']:
+        if col in df.columns:
+            df[col] = pd.to_datetime(df[col], errors="coerce").dt.date
+
+    # Teléfonos como string
+    for col in ['Teléfono Director', 'Teléfono Subrogante']:
+        if col in df.columns:
+            df[col] = df[col].astype(str).where(df[col].notna(), "")
+
+    return df
+
+def guardar_en_db(df):
+    """Persiste TODO el DataFrame actual (full replace)."""
+    conn = sqlite3.connect(DB_FILE)
+    cur = conn.cursor()
+    cur.execute("DELETE FROM directores")
+    for _, row in df.iterrows():
+        cur.execute("""
+            INSERT INTO directores 
+            (director, telefono_dir, fecha_inicio_dir, fecha_termino_dir,
+             subrogante, telefono_sub, fecha_inicio_sub, fecha_termino_sub)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            row.get("Director Regional", None),
+            row.get("Teléfono Director", None),
+            str(row.get("Fecha Inicio Director")) if pd.notna(row.get("Fecha Inicio Director")) else None,
+            str(row.get("Fecha Término Director")) if pd.notna(row.get("Fecha Término Director")) else None,
+            row.get("Subrogante", None),
+            row.get("Teléfono Subrogante", None),
+            str(row.get("Fecha Inicio Subrogante")) if pd.notna(row.get("Fecha Inicio Subrogante")) else None,
+            str(row.get("Fecha Término Subrogante")) if pd.notna(row.get("Fecha Término Subrogante")) else None,
+        ))
+    conn.commit()
+    conn.close()
+
+# Inicializar DB
+init_db()
 
 # =========================
 # LISTAS INICIALES
@@ -126,15 +217,14 @@ if "subrogantes_lista" not in st.session_state:
 # ESTADO DE DATOS
 # =========================
 if 'directores_data' not in st.session_state:
-    st.session_state.directores_data = pd.DataFrame(columns=[
-        'Director Regional', 'Teléfono Director', 'Fecha Inicio Director', 'Fecha Término Director',
-        'Subrogante', 'Teléfono Subrogante', 'Fecha Inicio Subrogante', 'Fecha Término Subrogante'
-    ])
+    st.session_state.directores_data = cargar_desde_db()
+
 if 'calendario_data' not in st.session_state:
     year = datetime.now().year
     all_days = pd.date_range(start=date(year, 1, 1), end=date(year, 12, 31), freq='D')
     st.session_state.calendario_data = pd.DataFrame(index=[], columns=all_days.strftime('%Y-%m-%d'))
     st.session_state.calendario_data.index.name = 'Nombre'
+
 if 'selected_rows' not in st.session_state:
     st.session_state.selected_rows = []
 if 'modo_edicion' not in st.session_state:
@@ -146,13 +236,14 @@ if 'indice_edicion' not in st.session_state:
 # FUNCIONES
 # =========================
 def estilo_calendario(val):
-    if val == 'Vacaciones': return 'background-color: #DDEFFB;'
-    if val == 'Subrogante': return 'background-color: #EA7A85;'
+    if val == 'Vacaciones': return 'background-color: #DDEFFB; color: #DDEFFB'
+    if val == 'Subrogante': return 'background-color: #EA7A85;color: #EA7A85;'
     return ''
 
 def crear_dataframe_vacio(columnas):
     df_vacio = pd.DataFrame(columns=columnas)
-    for i in range(12): df_vacio.loc[i] = [""] * len(columnas)
+    for i in range(12):
+        df_vacio.loc[i] = [""] * len(columnas)
     return df_vacio
 
 def convertir_fechas_a_string(df):
@@ -160,11 +251,9 @@ def convertir_fechas_a_string(df):
     df_copy = df.copy()
     columnas_fecha = ['Fecha Inicio Director', 'Fecha Término Director', 
                      'Fecha Inicio Subrogante', 'Fecha Término Subrogante']
-    
     for col in columnas_fecha:
         if col in df_copy.columns:
             df_copy[col] = df_copy[col].apply(lambda x: x.strftime('%Y-%m-%d') if pd.notna(x) else "")
-    
     return df_copy
 
 def convertir_string_a_fecha(valor):
@@ -185,7 +274,6 @@ def convertir_a_string_telefono(valor):
     if pd.isna(valor) or valor == "":
         return ""
     elif isinstance(valor, (int, float)):
-        # Convertir a string y eliminar .0 si es un número flotante
         return str(int(valor)) if valor == int(valor) else str(valor)
     elif isinstance(valor, str):
         return valor
@@ -206,7 +294,7 @@ def importar_desde_excel():
                              'Fecha Inicio Subrogante', 'Fecha Término Subrogante']
             for col in columnas_fecha:
                 if col in df_importado.columns:
-                    df_importado[col] = pd.to_datetime(df_importado[col]).dt.date
+                    df_importado[col] = pd.to_datetime(df_importado[col], errors="coerce").dt.date
             
             # Convertir números de teléfono a strings
             columnas_telefono = ['Teléfono Director', 'Teléfono Subrogante']
@@ -215,9 +303,10 @@ def importar_desde_excel():
                     df_importado[col] = df_importado[col].apply(convertir_a_string_telefono)
             
             st.session_state.directores_data = df_importado[columnas_requeridas]
+            guardar_en_db(st.session_state.directores_data)  # persistir
             actualizar_calendario()
-        except:
-            pass
+        except Exception:
+            pass  # Se mantiene comportamiento silencioso del original
 
 def guardar_registro():
     director_input = st.session_state.get('director_input_widget', "")
@@ -235,7 +324,7 @@ def guardar_registro():
         if subrogante_input and subrogante_input not in st.session_state.subrogantes_lista:
             st.session_state.subrogantes_lista.append(subrogante_input)
 
-        # Asegurar que las fechas sean objetos date y teléfonos sean strings
+        # Normalizar tipos
         fecha_inicio_dir = convertir_string_a_fecha(fecha_inicio_dir)
         fecha_termino_dir = convertir_string_a_fecha(fecha_termino_dir)
         fecha_inicio_sub = convertir_string_a_fecha(fecha_inicio_sub)
@@ -255,29 +344,21 @@ def guardar_registro():
         }
 
         if st.session_state.modo_edicion and st.session_state.indice_edicion is not None:
-            # 🔹 Modificar registro existente - asegurar tipos de datos correctos
+            # Modificar
             for col, value in nuevo_registro.items():
-                # Convertir a tipo de dato compatible con la columna existente
-                if col in ['Teléfono Director', 'Teléfono Subrogante']:
-                    # Asegurar que los teléfonos sean strings
-                    st.session_state.directores_data.loc[st.session_state.indice_edicion, col] = str(value) if value is not None else ""
-                elif col in ['Fecha Inicio Director', 'Fecha Término Director', 
-                           'Fecha Inicio Subrogante', 'Fecha Término Subrogante']:
-                    # Asegurar que las fechas sean objetos date
-                    st.session_state.directores_data.loc[st.session_state.indice_edicion, col] = value
-                else:
-                    st.session_state.directores_data.loc[st.session_state.indice_edicion, col] = value
+                st.session_state.directores_data.loc[st.session_state.indice_edicion, col] = value
             st.session_state.modo_edicion = False
             st.session_state.indice_edicion = None
         else:
-            # 🔹 Crear nuevo registro
+            # Crear
             st.session_state.directores_data = pd.concat([
                 st.session_state.directores_data, pd.DataFrame([nuevo_registro])
             ], ignore_index=True)
 
+        guardar_en_db(st.session_state.directores_data)  # persistir
         actualizar_calendario()
 
-        # Reset widgets usando callbacks
+        # Reset widgets
         st.session_state.director_input_widget = ""
         st.session_state.telefono_dir_input_widget = ""
         st.session_state.fecha_inicio_dir_widget = None
@@ -310,6 +391,7 @@ def eliminar_registros_seleccionados():
         st.session_state.directores_data = st.session_state.directores_data.drop(
             st.session_state.selected_rows
         ).reset_index(drop=True)
+        guardar_en_db(st.session_state.directores_data)  # persistir
         actualizar_calendario()
         st.session_state.selected_rows = []
 
@@ -349,6 +431,9 @@ def exportar_a_excel():
     output.seek(0)
     return output
 
+# Recalcular calendario al cargar (para que DB se refleje de inmediato)
+actualizar_calendario()
+
 # =========================
 # INTERFAZ
 # =========================
@@ -387,7 +472,9 @@ with col_form:
     with col_btn5:
         if not st.session_state.directores_data.empty:
             excel_data = exportar_a_excel()
-            st.download_button("📤 Exportar", data=excel_data,
+            st.download_button(
+                "📤 Exportar",
+                data=excel_data,
                 file_name="vacaciones_permisos.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True
