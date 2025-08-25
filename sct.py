@@ -171,7 +171,7 @@ with col2:
 with col4:
     try:
         img_bytes = img_to_bytes("Contactos.png")
-        contactos_url = "http://localhost:8502"
+        contactos_url = "https://sct-contactos.streamlit.app/"
         st.markdown(
             f'<div style="text-align: center;">'
             f'<a href="{contactos_url}" target="_blank">'
@@ -203,6 +203,7 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
