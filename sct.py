@@ -68,7 +68,6 @@ header_html = f"""
             align-items: center;
             justify-content: center;
             font-size: 16px;
-            #font-weight: bold;
             color: #333;
             margin-bottom: 30px;
         }}
@@ -80,10 +79,6 @@ header_html = f"""
             background-color: #ccc;
             margin-bottom: 30px;
         }}
-
-
-
-
     </style>
 
     <!-- Encabezado -->
@@ -99,23 +94,21 @@ header_html = f"""
     <div class="quienes-somos">
         La Sección de Coordinación Territorial (SCT) tiene como función la supervisión funcional <br> de las Direcciones Regionales del ISL,
         coordinando acciones con diferentes áreas a nivel central y <br> regional para el cumplimiento de objetivos y metas del Servicio.
-
     </div>
 
     <!-- Línea separadora -->
     <hr class="separador">
 """
-
 # =========================
 # CONFIGURACIÓN DE LA PÁGINA PRINCIPAL
 # =========================
 st.set_page_config(
     page_title="Menú principal", 
-    layout="wide",  # ancho completo
+    layout="wide",  
     initial_sidebar_state="collapsed"
 )
 
-# Ocultar la barra lateral con CSS personalizado
+# Ocultar la barra lateral
 st.markdown(
     """
     <style>
@@ -127,7 +120,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Renderizar encabezado y nuevo contenedor
+# Renderizar encabezado
 st.markdown(header_html, unsafe_allow_html=True)
 
 # =========================
@@ -141,7 +134,7 @@ def img_to_bytes(img_path):
 # =========================
 # BOTONES/IMÁGENES PRINCIPALES
 # =========================
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     try:
@@ -175,13 +168,13 @@ with col2:
     except:
         st.error("No se pudo cargar la imagen Gestión_regional.png")
 
-with col3:
+with col4:
     try:
         img_bytes = img_to_bytes("Contactos.png")
         contactos_url = "http://localhost:8502"
         st.markdown(
             f'<div style="text-align: center;">'
-            f'<a href="https://sct-contactos.streamlit.app/" target="_blank">'
+            f'<a href="{contactos_url}" target="_blank">'
             f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
             f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
             f'</a>'
@@ -192,7 +185,24 @@ with col3:
     except:
         st.error("No se pudo cargar la imagen Contactos.png")
 
+with col3:
+    try:
+        img_bytes = img_to_bytes("vacaciones_feriados.png")
+        st.markdown(
+            f'<div style="text-align: center;">'
+            f'<a href="https://sct-vacaciones-feriados.streamlit.app/" target="_blank">'
+            f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
+            f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
+            f'</a>'
+            f'<div style="margin-top:8px; font-size:14px; font-weight:700; color:#333;">Vacaciones</div>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+    except:
+        st.error("No se pudo cargar la imagen vacaciones.png")
+
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
