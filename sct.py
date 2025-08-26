@@ -187,19 +187,19 @@ with col4:
 
 with col3:
     try:
-        img_bytes = img_to_bytes("vacaciones_feriados.png")
+        img_bytes = img_to_bytes("Vacaciones_feriados.png")
         st.markdown(
             f'<div style="text-align: center; margin-bottom: 15px;">'
             f'<a href="https://sct-vacaciones-feriados.streamlit.app/" target="_blank">'
             f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
             f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
             f'</a>'
-            f'<div style="margin-top:8px; font-size:14px; font-weight:700; color:#333;">Vacaciones</div>'
+            f'<div style="margin-top:8px; font-size:14px; font-weight:700; color:#333;">Vacaciones/Feriados</div>'
             f'</div>',
             unsafe_allow_html=True
         )
     except:
-        st.error("No se pudo cargar la imagen vacaciones.png")
+        st.error("No se pudo cargar la imagen Vacaciones_feriados.png")
 
     try:
         img_bytes = img_to_bytes("Control-Paro.png")
@@ -223,6 +223,7 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
