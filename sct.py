@@ -241,21 +241,7 @@ with col4:
     except:
         st.error("No se pudo cargar la imagen Contactos.png")
 
-     try:
-        img_bytes = img_to_bytes("preguntas.png")
-        contactos_url = "https://sct-contactos.streamlit.app/"
-        st.markdown(
-            f'<div style="text-align: center;">'
-            f'<a href="{contactos_url}" target="_blank">'
-            f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
-            f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
-            f'</a>'
-            f'<div style="margin-top:8px; font-size:14px; font-weight:700; color:#333;">Preguntas Frecuentes</div>'
-            f'</div>',
-            unsafe_allow_html=True
-        )
-    except:
-        st.error("No se pudo cargar la imagen preguntas.png")   
+        
 
 with col3:
     st.markdown(
@@ -315,6 +301,7 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
