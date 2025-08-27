@@ -242,6 +242,12 @@ with col4:
         st.error("No se pudo cargar la imagen Contactos.png")
 
 with col3:
+    st.markdown(
+        """<div style='text-align: center; font-size:18px; font-weight:bold; color:#0F69B4; margin-bottom:12px;'>
+        Continuidad Operacional
+        </div>""",
+        unsafe_allow_html=True
+    )
     try:
         img_bytes = img_to_bytes("Vacaciones_feriados.png")
         st.markdown(
@@ -279,6 +285,7 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
