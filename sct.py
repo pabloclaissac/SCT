@@ -266,7 +266,7 @@ with col3:
     try:
         img_bytes = img_to_bytes("Control-Paro.png")
         st.markdown(
-            f'<div style="text-align: center;">'
+            f'<div style="text-align: center; margin-bottom: 15px">'
             f'<a href="https://sct-planilla2.streamlit.app/" target="_blank">'
             f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
             f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
@@ -278,6 +278,20 @@ with col3:
     except:
         st.error("No se pudo cargar la imagen Control-Paro.png")
 
+    try:
+        img_bytes = img_to_bytes("Control-Emergencia.png")
+        st.markdown(
+            f'<div style="text-align: center;">'
+            f'<a href="https://sct-planilla3.streamlit.app/" target="_blank">'
+            f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
+            f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
+            f'</a>'
+            f'<div style="margin-top:8px; font-size:14px; font-weight:700; color:#333;">Control/Emergencias</div>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+    except:
+        st.error("No se pudo cargar la imagen Control-Emergencias.png")
 
 
 
@@ -285,6 +299,7 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
