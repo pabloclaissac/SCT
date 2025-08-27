@@ -279,7 +279,7 @@ with col3:
         st.error("No se pudo cargar la imagen Control-Paro.png")
 
     try:
-        img_bytes = img_to_bytes("Control-Emergencia.png")
+        img_bytes = img_to_bytes("Control-Emergencias.png")
         st.markdown(
             f'<div style="text-align: center;">'
             f'<a href="https://sct-planilla3.streamlit.app/" target="_blank">'
@@ -299,6 +299,7 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
