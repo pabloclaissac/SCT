@@ -138,6 +138,15 @@ def img_to_bytes(img_path):
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
+
+    st.markdown(
+        """<div style='text-align: center; font-size:18px; font-weight:bold; color:#0F69B4; margin-bottom:12px;'>
+        Coordinación Territorial
+        </div>""",
+        unsafe_allow_html=True
+    )
+
+
     try:
         img_bytes = img_to_bytes("Gestión_Archivos.png")
         st.markdown(
@@ -169,6 +178,13 @@ with col1:
         st.error("No se pudo cargar la imagen Gestión_regional.png")
 
 with col2:
+    st.markdown(
+        """<div style='text-align: center; font-size:18px; font-weight:bold; color:#0F69B4; margin-bottom:12px;'>
+        Portales ISL
+        </div>""",
+        unsafe_allow_html=True
+    )
+
     try:
         img_bytes = img_to_bytes("PortalGestiona.png")
         st.markdown(
@@ -203,6 +219,12 @@ with col2:
 
 
 with col4:
+    st.markdown(
+        """<div style='text-align: center; font-size:18px; font-weight:bold; color:#0F69B4; margin-bottom:12px;'>
+        otros
+        </div>""",
+        unsafe_allow_html=True
+    )
     try:
         img_bytes = img_to_bytes("Contactos.png")
         contactos_url = "https://sct-contactos.streamlit.app/"
@@ -257,6 +279,7 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
