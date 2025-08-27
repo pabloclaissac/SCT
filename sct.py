@@ -172,7 +172,7 @@ with col2:
     try:
         img_bytes = img_to_bytes("PortalGestiona.png")
         st.markdown(
-            f'<div style="text-align: center;">'
+            f'<div style="text-align: center; margin-bottom: 15px;">'
             f'<a href="https://sites.google.com/isl.gob.cl/portalgestionadege/" target="_blank">'
             f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
             f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
@@ -257,6 +257,7 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
