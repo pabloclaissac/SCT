@@ -67,9 +67,10 @@ header_html = f"""
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 18px;
             color: #333;
             margin-bottom: 30px;
+                        
         }}
         /* Línea separadora */
         .separador {{
@@ -92,8 +93,8 @@ header_html = f"""
 
     <!-- Nuevo contenedor -->
     <div class="quienes-somos">
-        La Sección de Coordinación Territorial (SCT) tiene como función la supervisión funcional <br> de las Direcciones Regionales del ISL,
-        coordinando acciones con diferentes áreas a nivel central y <br> regional para el cumplimiento de objetivos y metas del Servicio.
+        La Sección de Coordinación Territorial (SCT) tiene como función la supervisión funcional de las Direcciones Regionales del ISL,
+        coordinando acciones con diferentes áreas a nivel central y regional para el cumplimiento de objetivos y metas del Servicio.
     </div>
 
     <!-- Línea separadora -->
@@ -140,7 +141,7 @@ with col1:
     try:
         img_bytes = img_to_bytes("Gestión_Archivos.png")
         st.markdown(
-            f'<div style="text-align: center;">'
+            f'<div style="text-align: center; margin-bottom: 15px;">'
             f'<a href="https://gestor-tareas-isl-oct.streamlit.app" target="_blank">'
             f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
             f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
@@ -152,7 +153,6 @@ with col1:
     except:
         st.error("No se pudo cargar la imagen Gestión_Archivos.png")
 
-with col2:
     try:
         img_bytes = img_to_bytes("Gestión_regional.png")
         st.markdown(
@@ -167,6 +167,40 @@ with col2:
         )
     except:
         st.error("No se pudo cargar la imagen Gestión_regional.png")
+
+with col2:
+    try:
+        img_bytes = img_to_bytes("PortalGestiona.png")
+        st.markdown(
+            f'<div style="text-align: center;">'
+            f'<a href="https://sites.google.com/isl.gob.cl/portalgestionadege/" target="_blank">'
+            f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
+            f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
+            f'</a>'
+            f'<div style="margin-top:8px; font-size:14px; font-weight:700; color:#333;">Portal Gestiona (DEGE)</div>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+    except:
+        st.error("No se pudo cargar la imagen PortalGestiona.png")
+
+    try:
+        img_bytes = img_to_bytes("controlygestionat.png")
+        st.markdown(
+            f'<div style="text-align: center;">'
+            f'<a href="https://sites.google.com/isl.gob.cl/seguimiento-at/inicio" target="_blank">'
+            f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
+            f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
+            f'</a>'
+            f'<div style="margin-top:8px; font-size:14px; font-weight:700; color:#333;">Control y Gestión AT</div>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+    except:
+        st.error("No se pudo cargar la imagen controlygestionat.png")
+
+
+
 
 with col4:
     try:
@@ -199,7 +233,7 @@ with col3:
             unsafe_allow_html=True
         )
     except:
-        st.error("No se pudo cargar la imagen Vacaciones_feriados.png")
+        st.error("No se pudo cargar la imagen vacaciones_feriados.png")
 
     try:
         img_bytes = img_to_bytes("Control-Paro.png")
@@ -223,6 +257,10 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
+
+
+
 
 
 
