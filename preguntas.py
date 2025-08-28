@@ -86,6 +86,15 @@ h1 {
     font-size: 14px;
     margin: 4px 0 12px 12px;
 }
+.custom-warning {
+    color: #0F69B4;
+    background-color: #E8F4FB;
+    border: 1px solid #0F69B4;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 10px 0;
+    font-size: 14px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -104,21 +113,31 @@ try:
         # =========================
         busqueda = st.text_input("🔎 Buscar en las preguntas", "")
         if busqueda:
-            df = df[
+            df_filtrado = df[
                 df["Pregunta"].str.contains(busqueda, case=False, na=False) |
                 df["Respuesta"].str.contains(busqueda, case=False, na=False)
             ]
+        else:
+            df_filtrado = df
 
         # =========================
-        # MOSTRAR PREGUNTAS
+        # MOSTRAR RESULTADOS
         # =========================
-        for i, row in df.iterrows():
-            with st.expander(f"❓ {row['Pregunta']}", expanded=False):
-                st.markdown(f"<div class='respuesta'>{row['Respuesta']}</div>", unsafe_allow_html=True)
+        placeholder = st.container()  # Contenedor dinámico
+
+        with placeholder:
+            if df_filtrado.empty:
+                st.markdown("<div class='custom-warning'>⚠️ No se encontraron resultados para la búsqueda.</div>", unsafe_allow_html=True)
+            else:
+                for i, row in df_filtrado.iterrows():
+                    with st.expander(f"❓ {row['Pregunta']}", expanded=False):
+                        st.markdown(f"<div class='respuesta'>{row['Respuesta']}</div>", unsafe_allow_html=True)
 
 except FileNotFoundError:
     st.error("❌ No se encontró el archivo 'preguntas.xlsx' en la misma carpeta que la aplicación.")
 except Exception as e:
     st.error(f"❌ Error al leer el archivo: {e}")
+
+
 
 
