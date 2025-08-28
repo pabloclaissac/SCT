@@ -1,4 +1,4 @@
-import streamlit as st
+import streamlit as st 
 import pandas as pd
 import base64
 
@@ -100,6 +100,16 @@ try:
         st.error("⚠️ El archivo debe tener dos columnas llamadas 'Pregunta' y 'Respuesta'")
     else:
         # =========================
+        # BUSCADOR
+        # =========================
+        busqueda = st.text_input("🔎 Buscar en las preguntas", "")
+        if busqueda:
+            df = df[
+                df["Pregunta"].str.contains(busqueda, case=False, na=False) |
+                df["Respuesta"].str.contains(busqueda, case=False, na=False)
+            ]
+
+        # =========================
         # MOSTRAR PREGUNTAS
         # =========================
         for i, row in df.iterrows():
@@ -110,4 +120,5 @@ except FileNotFoundError:
     st.error("❌ No se encontró el archivo 'preguntas.xlsx' en la misma carpeta que la aplicación.")
 except Exception as e:
     st.error(f"❌ Error al leer el archivo: {e}")
+
 
