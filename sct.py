@@ -288,7 +288,7 @@ with col3:
     try:
         img_bytes = img_to_bytes("Control-Paro.png")
         st.markdown(
-            f'<div style="text-align: center;">'
+            f'<div style="text-align: center; margin-bottom: 15px;">'
             f'<a href="https://sct-planilla2.streamlit.app/" target="_blank">'
             f'<img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px; '
             f'border-radius:8px; cursor:pointer; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">'
@@ -320,6 +320,7 @@ with col3:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
