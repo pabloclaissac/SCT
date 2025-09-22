@@ -9,7 +9,7 @@ from io import BytesIO
 # =========================
 COLOR_FONDO = "#0F69B4"
 IMAGEN_LOCAL = "LOGO-PROPIO-ISL-2023-CMYK-01.png"
-TITULO = "CONTROL CONTINUIDAD OPERACIONAL - MOVILIZACIONES"
+TITULO = "CONTROL CONTINUIDAD OPERACIONAL - EMERGENCIAS"
 SUBTITULO = "Sección de Coordinación Territorial"
 
 # =========================
@@ -281,4 +281,5 @@ st.info("""
 - Todo el texto se ajusta en varias líneas, con letra más pequeña y centrado
 - Use la columna de observaciones para notas adicionales
 """)
+
 
