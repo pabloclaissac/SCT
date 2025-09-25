@@ -12,6 +12,9 @@ IMAGEN_LOCAL = "LOGO-PROPIO-ISL-2023-CMYK-01.png"
 TITULO = "SECCIÓN DE COORDINACIÓN TERRITORIAL"
 SUBTITULO = "Sección de Coordinación Territorial"
 
+# Carpeta donde está este script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # =========================
 # CONVERTIR IMAGEN LOCAL A BASE64
 # =========================
@@ -21,7 +24,7 @@ def image_to_base64(path):
 
 # Cargar imagen del encabezado
 try:
-    img_base64 = image_to_base64(IMAGEN_LOCAL)
+    img_base64 = image_to_base64(os.path.join(BASE_DIR, IMAGEN_LOCAL))
     img_src = f"data:image/png;base64,{img_base64}"
 except:
     img_src = ""
@@ -87,9 +90,9 @@ header_html = f"""
         <div class="header-title">{TITULO}</div>
     </div>
     <div class="quienes-somos">
-        <div style="margin-top:8px; font-size:18px; font-weight:500; color:#333;">La Sección de Coordinación Territorial (SCT) tiene como función la supervisión funcional de las Direcciones Regionales del ISL,
+        La Sección de Coordinación Territorial (SCT) tiene como función la supervisión funcional de las Direcciones Regionales del ISL,
         coordinando acciones con diferentes áreas a nivel central y regional para el cumplimiento de objetivos y metas del Servicio.
-    </div></div>
+    </div>
     <hr class="separador">
 """
 st.set_page_config(page_title="Menú principal", layout="wide", initial_sidebar_state="collapsed")
@@ -162,11 +165,11 @@ with col2:
 
 # --- Columna 3
 with col3:
-    st.markdown("""<div style='text-align: center; font-size:18px; font-weight:bold; color:#0F69B4; margin-bottom: 12px;'>Control de Indicadores</div>""", unsafe_allow_html=True)
+    st.markdown("""<div style='text-align: center; font-size:18px; font-weight:bold; color:#0F69B4;'>Control de Indicadores</div>""", unsafe_allow_html=True)
     # Primer botón
     try:
-        archivo_excel1 = r"C:\Users\pclaissacs\OneDrive - Instituto de Seguridad Laboral\2.- 2025\1.Coordinación Regional\Códigos-Aplicaciones\Ver Excel\CONTROL INDICADORES PREVENCIÓN 2025.xlsm"
-        img_bytes = img_to_bytes("IndicadoresPrevencion.png")
+        archivo_excel1 = os.path.join(BASE_DIR, "CONTROL INDICADORES PREVENCIÓN 2025.xlsm")
+        img_bytes = img_to_bytes(os.path.join(BASE_DIR, "IndicadoresPrevencion.png"))
         st.markdown(f"""<div style="text-align: center; margin-bottom: 15px;">
                 <form action="" method="get">
                     <button type="submit" name="boton" value="abrir_excel1" style="border:none; background:none; padding:0; cursor:pointer;">
@@ -182,10 +185,10 @@ with col3:
     except Exception as e:
         st.error(f"No se pudo cargar el botón Indicadores Prevención: {e}")
 
-    # Segundo botón (nuevo)
+    # Segundo botón
     try:
-        archivo_excel2 = r"C:\Users\pclaissacs\OneDrive - Instituto de Seguridad Laboral\2.- 2025\1.Coordinación Regional\Códigos-Aplicaciones\Ver Excel\ACCIDENTES 2025.xlsm"
-        img_bytes = img_to_bytes("EstadisticasAccidentes.png")
+        archivo_excel2 = os.path.join(BASE_DIR, "ACCIDENTES 2025.xlsm")
+        img_bytes = img_to_bytes(os.path.join(BASE_DIR, "EstadisticasAccidentes.png"))
         st.markdown(f"""<div style="text-align: center;">
                 <form action="" method="get">
                     <button type="submit" name="boton" value="abrir_excel2" style="border:none; background:none; padding:0; cursor:pointer;">
@@ -236,6 +239,7 @@ with col5:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
