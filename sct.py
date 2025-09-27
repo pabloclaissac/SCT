@@ -1,8 +1,6 @@
 import streamlit as st 
 from pathlib import Path
 import base64
-import os
-import subprocess
 
 # =========================
 # CONFIGURACIÓN DEL ENCABEZADO
@@ -11,9 +9,6 @@ COLOR_FONDO = "#0F69B4"  # Azul
 IMAGEN_LOCAL = "LOGO-PROPIO-ISL-2023-CMYK-01.png"
 TITULO = "SECCIÓN DE COORDINACIÓN TERRITORIAL"
 SUBTITULO = "Sección de Coordinación Territorial"
-
-# Carpeta donde está este script
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # =========================
 # CONVERTIR IMAGEN LOCAL A BASE64
@@ -24,7 +19,7 @@ def image_to_base64(path):
 
 # Cargar imagen del encabezado
 try:
-    img_base64 = image_to_base64(os.path.join(BASE_DIR, IMAGEN_LOCAL))
+    img_base64 = image_to_base64(IMAGEN_LOCAL)
     img_src = f"data:image/png;base64,{img_base64}"
 except:
     img_src = ""
@@ -90,9 +85,9 @@ header_html = f"""
         <div class="header-title">{TITULO}</div>
     </div>
     <div class="quienes-somos">
-        La Sección de Coordinación Territorial (SCT) tiene como función la supervisión funcional de las Direcciones Regionales del ISL,
+        <div style="margin-top:8px; font-size:18px; font-weight:500; color:#333;">La Sección de Coordinación Territorial (SCT) tiene como función la supervisión funcional de las Direcciones Regionales del ISL,
         coordinando acciones con diferentes áreas a nivel central y regional para el cumplimiento de objetivos y metas del Servicio.
-    </div>
+    </div></div>
     <hr class="separador">
 """
 st.set_page_config(page_title="Menú principal", layout="wide", initial_sidebar_state="collapsed")
@@ -163,46 +158,35 @@ with col2:
     except:
         st.error("No se pudo cargar la imagen controlygestionat.png")
 
-# --- Columna 3
+# --- Columna 3 (Excel en OneDrive)
 with col3:
-    st.markdown("""<div style='text-align: center; font-size:18px; font-weight:bold; color:#0F69B4;'>Control de Indicadores</div>""", unsafe_allow_html=True)
-    # Primer botón
+    st.markdown("""<div style='text-align: center; font-size:18px; font-weight:bold; color:#0F69B4; margin-bottom: 12px;'>Control de Indicadores</div>""", unsafe_allow_html=True)
+    
+    # Botón 1: Indicadores Prevención
     try:
-        archivo_excel1 = os.path.join(BASE_DIR, "CONTROL INDICADORES PREVENCIÓN 2025.xlsm")
-        img_bytes = img_to_bytes(os.path.join(BASE_DIR, "IndicadoresPrevencion.png"))
+        img_bytes = img_to_bytes("IndicadoresPrevencion.png")
+        enlace_excel1 = "https://app.powerbi.com/links/VwwKrP4rGf?ctid=b4cb6346-287c-41d1-a54d-87b45d50463b&pbi_source=linkShare"
         st.markdown(f"""<div style="text-align: center; margin-bottom: 15px;">
-                <form action="" method="get">
-                    <button type="submit" name="boton" value="abrir_excel1" style="border:none; background:none; padding:0; cursor:pointer;">
-                        <img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px;border-radius:8px; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">
-                    </button>
-                </form>
+                <a href="{enlace_excel1}" target="_blank">
+                    <img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px;border-radius:8px; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">
+                </a>
                 <div style="margin-top:8px; font-size:14px; font-weight:700; color:#333;">Indicadores Prevención</div>
             </div>""", unsafe_allow_html=True)
-        if st.query_params.get("boton") == "abrir_excel1":
-            if os.path.exists(archivo_excel1):
-                subprocess.Popen(["start", "excel", archivo_excel1], shell=True)
-                st.query_params.clear()
     except Exception as e:
         st.error(f"No se pudo cargar el botón Indicadores Prevención: {e}")
 
-    # Segundo botón
+    # Botón 2: Accidentes
     try:
-        archivo_excel2 = os.path.join(BASE_DIR, "ACCIDENTES 2025.xlsm")
-        img_bytes = img_to_bytes(os.path.join(BASE_DIR, "EstadisticasAccidentes.png"))
+        img_bytes = img_to_bytes("EstadisticasAccidentes.png")
+        enlace_excel2 = "https://app.powerbi.com/links/c2VflcNYyZ?ctid=b4cb6346-287c-41d1-a54d-87b45d50463b&pbi_source=linkShare"
         st.markdown(f"""<div style="text-align: center;">
-                <form action="" method="get">
-                    <button type="submit" name="boton" value="abrir_excel2" style="border:none; background:none; padding:0; cursor:pointer;">
-                        <img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px;border-radius:8px; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">
-                    </button>
-                </form>
+                <a href="{enlace_excel2}" target="_blank">
+                    <img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px;border-radius:8px; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">
+                </a>
                 <div style="margin-top:8px; font-size:14px; font-weight:700; color:#333;">Accidentes</div>
             </div>""", unsafe_allow_html=True)
-        if st.query_params.get("boton") == "abrir_excel2":
-            if os.path.exists(archivo_excel2):
-                subprocess.Popen(["start", "excel", archivo_excel2], shell=True)
-                st.query_params.clear()
     except Exception as e:
-        st.error(f"No se pudo cargar el botón Otro Indicador: {e}")
+        st.error(f"No se pudo cargar el botón Accidentes: {e}")
 
 # --- Columna 4
 with col4:
@@ -239,6 +223,8 @@ with col5:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
+
 
 
 
