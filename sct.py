@@ -165,7 +165,7 @@ with col3:
     # Botón 1: Indicadores Prevención
     try:
         img_bytes = img_to_bytes("IndicadoresPrevencion.png")
-        enlace_excel1 = "https://app.powerbi.com/links/VwwKrP4rGf?ctid=b4cb6346-287c-41d1-a54d-87b45d50463b&pbi_source=linkShare"
+        enlace_excel1 = "https://app.powerbi.com/view?r=eyJrIjoiYjFkZWViYTQtZDNhYS00YTdmLWFhZTgtMjA3Y2I4ZDc1MjE0IiwidCI6ImI0Y2I2MzQ2LTI4N2MtNDFkMS1hNTRkLTg3YjQ1ZDUwNDYzYiJ9"
         st.markdown(f"""<div style="text-align: center; margin-bottom: 15px;">
                 <a href="{enlace_excel1}" target="_blank">
                     <img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px;border-radius:8px; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">
@@ -178,7 +178,7 @@ with col3:
     # Botón 2: Accidentes
     try:
         img_bytes = img_to_bytes("EstadisticasAccidentes.png")
-        enlace_excel2 = "https://app.powerbi.com/links/c2VflcNYyZ?ctid=b4cb6346-287c-41d1-a54d-87b45d50463b&pbi_source=linkShare"
+        enlace_excel2 = "https://app.powerbi.com/view?r=eyJrIjoiZTk2MmY0YjQtMWUyNS00Njk2LTg1YjktZDYwNGQ1Y2Q0Y2YxIiwidCI6ImI0Y2I2MzQ2LTI4N2MtNDFkMS1hNTRkLTg3YjQ1ZDUwNDYzYiJ9"
         st.markdown(f"""<div style="text-align: center;">
                 <a href="{enlace_excel2}" target="_blank">
                     <img src="data:image/png;base64,{img_bytes}" style="width:100px; height:100px;border-radius:8px; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">
@@ -223,6 +223,7 @@ with col5:
 
 # Espaciado adicional
 st.markdown("<br><br>", unsafe_allow_html=True)
+
 
 
 
