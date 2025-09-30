@@ -15,7 +15,7 @@ SUBTITULO = "Sección de Coordinación Territorial"
 
 TAMANO_TEXTO_INPUT = "12px"
 TAMANO_TEXTO_DROPDOWN = "12px"
-TAMANO_TEXTO_BOTONES = "12px"
+TAMANO_TEXTO_BOTONES = "8px"
 COLOR_BOTONES = "#0F69B4"
 COLOR_BOTONES_HOVER = "#DDEFFB"
 COLOR_BOTONES_SECUNDARIO = "#6c757d"
@@ -123,19 +123,23 @@ def cargar_desde_bd():
     finally:
         conn.close()
     if not df.empty:
-        df = df.drop(columns=["id"])
+        # eliminar columna id y renombrar a UI
+        if "id" in df.columns:
+            df = df.drop(columns=["id"])
         df = df.rename(columns=MAPEO_BD_UI)
     else:
         df = pd.DataFrame(columns=COLUMNAS_UI)
     return df
 
 def guardar_en_bd(df_ui):
+    # df_ui: DataFrame con nombres UI (COLUMNAS_UI)
     df_bd = df_ui.rename(columns=MAPEO_UI_BD)
     conn = sqlite3.connect(DB_FILE, timeout=10, check_same_thread=False)
     try:
         cursor = conn.cursor()
         cursor.execute("DELETE FROM contactos")
         conn.commit()
+        # Insertar fila por fila (mantener orden y compatibilidad)
         for _, row in df_bd.iterrows():
             cursor.execute("""
                 INSERT INTO contactos (Nombre, Cargo, Dpto_Region,
@@ -317,44 +321,77 @@ if "registro_modificar" not in st.session_state:
     st.session_state.registro_modificar = None
 
 # =========================
-# FORMULARIO + BOTONES
+# FORMULARIO (inputs)
 # =========================
 st.subheader("Agregar / Modificar Contacto")
 
-col_inputs, col_botones, col_vacio = st.columns([4, 2, 2])
+# Mantener layout original para inputs (2.5, 0.6, 1, 1)
+col_inputs, col_botones_placeholder, col_vacio1, col_vacio2 = st.columns([2.5, 0.6, 1, 1])
 
 with col_inputs:
     contacto_actual = {col:"" for col in COLUMNAS_UI}
-    if st.session_state.registro_modificar is not None:
-        contacto_actual = st.session_state.contactos.loc[st.session_state.registro_modificar]
+    if st.session_state.registro_modificar is not None and not st.session_state.contactos.empty:
+        try:
+            contacto_actual = st.session_state.contactos.loc[st.session_state.registro_modificar]
+        except Exception:
+            # si el índice no existe, mantener vacío
+            contacto_actual = {col:"" for col in COLUMNAS_UI}
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        nombre = st.text_input("Nombre", value=contacto_actual['Nombre'])
+        nombre = st.text_input("Nombre", value=contacto_actual.get('Nombre', ''))
     with col2:
-        cargo_idx = OPCIONES_CARGO.index(contacto_actual['Cargo']) if contacto_actual['Cargo'] in OPCIONES_CARGO else 0
+        cargo_val = contacto_actual.get('Cargo', '')
+        cargo_idx = OPCIONES_CARGO.index(cargo_val) if cargo_val in OPCIONES_CARGO else 0
         cargo = st.selectbox("Cargo", OPCIONES_CARGO, index=cargo_idx)
-        depto_idx = OPCIONES_DEPTO.index(contacto_actual['Dpto./Región']) if contacto_actual['Dpto./Región'] in OPCIONES_DEPTO else 0
+        depto_val = contacto_actual.get('Dpto./Región', '')
+        depto_idx = OPCIONES_DEPTO.index(depto_val) if depto_val in OPCIONES_DEPTO else 0
         departamento = st.selectbox("Dpto./Región", OPCIONES_DEPTO, index=depto_idx)
     with col3:
-        telefono = st.text_input("Teléfono Directo/Anexo", value=contacto_actual['Teléfono Directo/Anexo'])
-        celular_inst = st.text_input("Celular Institucional", value=contacto_actual['Celular Institucional'])
+        telefono = st.text_input("Teléfono Directo/Anexo", value=contacto_actual.get('Teléfono Directo/Anexo', ''))
+        celular_inst = st.text_input("Celular Institucional", value=contacto_actual.get('Celular Institucional', ''))
     with col4:
-        celular_part = st.text_input("Celular Particular", value=contacto_actual['Celular Particular'])
-        correo = st.text_input("Correo", value=contacto_actual['Correo'])
+        celular_part = st.text_input("Celular Particular", value=contacto_actual.get('Celular Particular', ''))
+        correo = st.text_input("Correo", value=contacto_actual.get('Correo', ''))
 
-with col_botones:
-    col_acciones, col_opciones = st.columns(2)
+# dejamos los placeholders vacíos para preservar diseño original
+with col_botones_placeholder:
+    pass
+with col_vacio1:
+    pass
+with col_vacio2:
+    pass
 
-    with col_acciones:
-        if st.button("Guardar", use_container_width=True):
+# =========================
+# FILA DE BOTONES (4 columnas: 2.5, 0.6, 1, 1)
+# En la PRIMERA columna colocamos TODOS los botones uno al lado del otro
+# =========================
+fila_btns = st.columns([0.5, 2, 1, 1, 1])
+
+with fila_btns[0]:
+    pass
+
+
+# primera columna: botones horizontales
+with fila_btns[1]:
+    b1, b2, b3, b4, b5, b6 = st.columns([1,1,1,1,1,1])
+
+    with b1:
+        if st.button("Guardar", use_container_width=True, key="btn_guardar"):
             nuevo = {
                 "Nombre": nombre, "Cargo": cargo, "Dpto./Región": departamento,
                 "Teléfono Directo/Anexo": telefono, "Celular Institucional": celular_inst,
                 "Celular Particular": celular_part, "Correo": correo
             }
             if st.session_state.registro_modificar is not None:
-                st.session_state.contactos.loc[st.session_state.registro_modificar] = nuevo
+                try:
+                    st.session_state.contactos.loc[st.session_state.registro_modificar] = nuevo
+                except Exception:
+                    # si falla por índice, concatenar como nuevo
+                    st.session_state.contactos = pd.concat(
+                        [st.session_state.contactos, pd.DataFrame([nuevo])],
+                        ignore_index=True
+                    )
                 st.session_state.registro_modificar = None
             else:
                 st.session_state.contactos = pd.concat(
@@ -363,30 +400,45 @@ with col_botones:
                 )
             guardar_en_bd(st.session_state.contactos)
 
-        if st.button("Modificar", use_container_width=True):
+    with b2:
+        if st.button("Modificar", use_container_width=True, key="btn_modificar"):
             if st.session_state.registro_modificar is None:
                 st.warning("⚠️ Debes seleccionar un contacto para modificar.")
 
-        if st.button("Cancelar", use_container_width=True):
+    with b3:
+        if st.button("Cancelar", use_container_width=True, key="btn_cancelar"):
             st.session_state.registro_modificar = None
 
-        if st.button("Eliminar", use_container_width=True):
+    with b4:
+        if st.button("Eliminar", use_container_width=True, key="btn_eliminar"):
             if st.session_state.registro_modificar is not None:
-                st.session_state.contactos = st.session_state.contactos.drop(
-                    index=st.session_state.registro_modificar
-                ).reset_index(drop=True)
+                try:
+                    st.session_state.contactos = st.session_state.contactos.drop(
+                        index=st.session_state.registro_modificar
+                    ).reset_index(drop=True)
+                except Exception:
+                    st.warning("No se pudo eliminar el registro seleccionado.")
                 st.session_state.registro_modificar = None
                 guardar_en_bd(st.session_state.contactos)
 
-    with col_opciones:
-        if st.button("📥 Exportar Excel", use_container_width=True):
+    with b5:
+        if st.button("Exportar", use_container_width=True, key="btn_exportar"):
             buffer = exportar_excel(st.session_state.contactos)
+            # Mostrar botón de descarga inmediatamente
             st.download_button("Descargar archivo", data=buffer, file_name="contactos.xlsx",
-                               mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", use_container_width=True)
-        if st.button("📥 Importar Excel", use_container_width=True):
+                               mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                               use_container_width=True)
+
+    with b6:
+        if st.button("Importar", use_container_width=True, key="btn_importar"):
             importar_excel_automatico()
 
-with col_vacio:
+# columnas vacías para mantener proporciones y diseño
+with fila_btns[2]:
+    pass
+with fila_btns[3]:
+    pass
+with fila_btns[4]:
     pass
 
 # =========================
@@ -417,6 +469,7 @@ edited = st.data_editor(
 seleccionados = edited[edited["Seleccionar"] == True]
 if not seleccionados.empty:
     idx = seleccionados.index[0]
+    # forzar único seleccionado
     edited.loc[edited.index != idx, "Seleccionar"] = False
     st.session_state.registro_modificar = idx
 else:
@@ -425,3 +478,6 @@ else:
 st.session_state.contactos = edited.drop(columns=["Seleccionar"])
 if not st.session_state.contactos.empty:
     guardar_en_bd(st.session_state.contactos)
+if not st.session_state.contactos.empty:
+    guardar_en_bd(st.session_state.contactos)
+
